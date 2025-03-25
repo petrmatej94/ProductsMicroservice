@@ -35,20 +35,8 @@ public static class ContractMapping
 		return products.Select(product => product.MapToResponse());
 	}
 
-	public static void UpdateFromRequest(this Product product, PatchProductRequest request)
+	public static void UpdateFromRequest(this Product product, PatchProductStockRequest request)
 	{
-		if (request.Name is not null)
-			product.UpdateName(request.Name);
-
-		if (request.ImageUrl is not null)
-			product.UpdateImageUrl(request.ImageUrl);
-
-		if (request.Price.HasValue)
-			product.UpdatePrice(request.Price.Value);
-
-		if (request.Description is not null)
-			product.UpdateDescription(request.Description);
-
 		if (request.QuantityInStock.HasValue)
 			product.UpdateStock(request.QuantityInStock.Value);
 	}

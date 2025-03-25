@@ -37,18 +37,6 @@ public class ProductRepository : IProductRepository
 		if (existingProduct == null)
 			return null;
 
-		if (!string.IsNullOrWhiteSpace(product.Name)) 
-			existingProduct.UpdateName(product.Name);
-
-		if (!string.IsNullOrWhiteSpace(product.ImageUrl)) 
-			existingProduct.UpdateImageUrl(product.ImageUrl);
-
-		if (product.Price >= 0) 
-			existingProduct.UpdatePrice(product.Price);
-
-		if (product.Description != null) 
-			existingProduct.UpdateDescription(product.Description);
-
 		if (product.QuantityInStock >= 0) 
 			existingProduct.UpdateStock(product.QuantityInStock);
 

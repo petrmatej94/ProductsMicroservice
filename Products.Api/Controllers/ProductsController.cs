@@ -49,8 +49,8 @@ public class ProductsController : ControllerBase
 		return CreatedAtAction(nameof(Get), new { id = product.Id }, response);
 	}
 
-	[HttpPost(ApiEndpoints.Products.Patch)]
-	public async Task<IActionResult> Patch([FromRoute] Guid id, [FromBody]PatchProductRequest request)
+	[HttpPatch(ApiEndpoints.Products.Patch)]
+	public async Task<IActionResult> PatchStock([FromRoute] Guid id, [FromBody] PatchProductStockRequest request)
 	{
 		if (request is null)
 		{

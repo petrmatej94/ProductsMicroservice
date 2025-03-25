@@ -37,7 +37,7 @@ public class ProductsControllerTests
 	public async Task Get_ReturnsNotFound_WhenProductDoesNotExist()
 	{
 		var productId = Guid.NewGuid();
-		_mockProductService.Setup(service => service.GetByIdAsync(productId)).ReturnsAsync((Product)null);
+		_mockProductService.Setup(service => service.GetByIdAsync(productId)).ReturnsAsync((Product)null!);
 
 		var result = await _controller.Get(productId);
 
@@ -93,39 +93,32 @@ public class ProductsControllerTests
 	public async Task Patch_ReturnsOk_WhenProductIsUpdated()
 	{
 		var productId = Guid.NewGuid();
-		var request = new PatchProductRequest
+		var request = new PatchProductStockRequest
 		{
-			Name = "Updated Laptop",
-			ImageUrl = "updatedImage.jpg",
-			Price = 1500,
 			QuantityInStock = 15
 		};
 		var product = new Product("Laptop", "image.jpg", 1000, "A great laptop", 10);
 		_mockProductService.Setup(service => service.GetByIdAsync(productId)).ReturnsAsync(product);
 		_mockProductService.Setup(service => service.UpdateAsync(It.IsAny<Product>())).ReturnsAsync(product);
 
-		var result = await _controller.Patch(productId, request);
+		var result = await _controller.PatchStock(productId, request);
 
 		var actionResult = Assert.IsType<OkObjectResult>(result);
 		var response = Assert.IsType<ProductResponse>(actionResult.Value);
-		Assert.Equal("Updated Laptop", response.Name);
-		Assert.Equal(1500, response.Price);
+		Assert.Equal(15, response.QuantityInStock);
 	}
 
 	[Fact]
 	public async Task Patch_ReturnsNotFound_WhenProductDoesNotExist()
 	{
 		var productId = Guid.NewGuid();
-		var request = new PatchProductRequest
+		var request = new PatchProductStockRequest
 		{
-			Name = "Updated Laptop",
-			ImageUrl = "updatedImage.jpg",
-			Price = 1500,
 			QuantityInStock = 15
 		};
-		_mockProductService.Setup(service => service.GetByIdAsync(productId)).ReturnsAsync((Product)null);
+		_mockProductService.Setup(service => service.GetByIdAsync(productId)).ReturnsAsync((Product)null!);
 
-		var result = await _controller.Patch(productId, request);
+		var result = await _controller.PatchStock(productId, request);
 
 		Assert.IsType<NotFoundResult>(result);
 	}

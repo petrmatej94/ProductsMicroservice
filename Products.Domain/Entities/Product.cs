@@ -19,35 +19,6 @@ public class Product
 		QuantityInStock = quantityInStock;
 	}
 
-	public void UpdateName(string name)
-	{
-		if (string.IsNullOrWhiteSpace(name))
-			throw new ArgumentException("Name is required.");
-
-		Name = name;
-	}
-
-	public void UpdateImageUrl(string imageUrl)
-	{
-		if (string.IsNullOrWhiteSpace(imageUrl))
-			throw new ArgumentException("Image URL is required.");
-
-		ImageUrl = imageUrl;
-	}
-
-	public void UpdatePrice(decimal price)
-	{
-		if (price < 0)
-			throw new ArgumentOutOfRangeException(nameof(price), "Price cannot be negative.");
-
-		Price = price;
-	}
-
-	public void UpdateDescription(string? description)
-	{
-		Description = description;
-	}
-
 	public void UpdateStock(int quantity)
 	{
 		if (quantity < 0)

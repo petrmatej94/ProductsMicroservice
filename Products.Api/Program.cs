@@ -4,11 +4,17 @@ using Products.Application.Services;
 using Products.Infrastructure.Repositories;
 using Products.Persistence;
 using Products.Persistence.Database;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+	var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+	var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+	c.IncludeXmlComments(xmlPath);
+});
 
 builder.Services.AddControllers();
 

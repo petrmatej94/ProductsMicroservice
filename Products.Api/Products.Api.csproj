@@ -17,5 +17,9 @@
     <ProjectReference Include="..\Products.Contracts\Products.Contracts.csproj" />
     <ProjectReference Include="..\Products.Persistence\Products.Persistence.csproj" />
   </ItemGroup>
+	
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
 
 </Project>

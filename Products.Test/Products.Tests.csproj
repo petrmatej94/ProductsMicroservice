@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Products.Domain\Products.Domain.csproj" />
-    <ProjectReference Include="..\ProductsMicroservice\Products.Api.csproj" />
+    <ProjectReference Include="..\Products.Api\Products.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

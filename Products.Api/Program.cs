@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 using Products.Application.Interfaces;
+using Products.Infrastructure.Queue;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +62,8 @@ builder.Services.AddVersionedApiExplorer(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddSingleton<IStockUpdateQueue, InMemoryStockUpdateQueue>();
+builder.Services.AddHostedService<StockUpdateBackgroundService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 

@@ -1,6 +1,9 @@
+using FluentValidation.AspNetCore;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Products.Application.Services;
+using Products.Application.Validators;
 using Products.Infrastructure.Repositories;
 using Products.Persistence;
 using Products.Persistence.Database;
@@ -17,6 +20,10 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddControllers();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateProductRequestValidator>();
 
 builder.Services.AddApiVersioning(options =>
 {

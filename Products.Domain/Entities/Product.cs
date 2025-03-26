@@ -11,6 +11,18 @@ public class Product
 
 	public Product(string name, string imageUrl, decimal price, string? description, int quantityInStock)
 	{
+		if (string.IsNullOrWhiteSpace(name))
+			throw new ArgumentException("Name is required", nameof(name));
+
+		if (!Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
+			throw new ArgumentException("Invalid image URL", nameof(imageUrl));
+
+		if (price <= 0)
+			throw new ArgumentOutOfRangeException(nameof(price), "Price must be greater than 0");
+
+		if (quantityInStock < 0)
+			throw new ArgumentOutOfRangeException(nameof(quantityInStock), "Quantity cannot be negative");
+
 		Id = Guid.NewGuid();
 		Name = name;
 		ImageUrl = imageUrl;

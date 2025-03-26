@@ -7,17 +7,17 @@ public static class MockProductData
 {
 	public static Product GetLaptopProduct()
 	{
-		return new Product("Laptop", "image.jpg", 25000, "Lenovo laptop", 10);
+		return new Product("Laptop", "https://image.jpg", 25000, "Lenovo laptop", 10);
 	}
 
-	public static Product GetPhoneProduct()
+	public static Product GetPhoneProduct(int initialStock = 5)
 	{
-		return new Product("Phone", "image2.jpg", 8000, "Samsung smartphone", 5);
+		return new Product("Phone", "https://image2.jpg", 8000, "Samsung smartphone", initialStock);
 	}
 
 	public static Product GetTabletProduct()
 	{
-		return new Product("Tablet", "image3.jpg", 9000, "Xiaomi tablet", 3);
+		return new Product("Tablet", "https://image3.jpg", 9000, "Xiaomi tablet", 3);
 	}
 
 	public static IEnumerable<Product> GetAllProducts()
@@ -35,7 +35,7 @@ public static class MockProductData
 		return new CreateProductRequest
 		{
 			Name = "Laptop",
-			ImageUrl = "image.jpg",
+			ImageUrl = "https://image.jpg",
 			Price = 25000,
 			Description = "Lenovo laptop",
 			QuantityInStock = 10

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Products.Api.Controllers;
+using Products.Application.Interfaces;
 using Products.Application.Services;
-using Products.Application.Validators;
+using Products.Contracts.Messages;
+using Products.Contracts.Requests;
 using Products.Contracts.Responses;
 using Products.Domain.Entities;
 using Products.Tests.MockData;
@@ -12,15 +14,15 @@ namespace Products.Tests;
 public class ProductsControllerV2Tests
 {
 	private readonly Mock<IProductService> _mockProductService;
+	private readonly Mock<IStockUpdateQueue> _mockQueue;
 	private readonly ProductsControllerV2 _controller;
 	private readonly CancellationToken _token = CancellationToken.None;
-	private readonly GetAllProductsRequestValidator _validator;
 
 	public ProductsControllerV2Tests()
 	{
 		_mockProductService = new Mock<IProductService>();
-		_controller = new ProductsControllerV2(_mockProductService.Object);
-		_validator = new GetAllProductsRequestValidator();
+		_mockQueue = new Mock<IStockUpdateQueue>();
+		_controller = new ProductsControllerV2(_mockProductService.Object, _mockQueue.Object);
 	}
 
 	[Fact]
@@ -59,5 +61,31 @@ public class ProductsControllerV2Tests
 		var okResult = Assert.IsType<OkObjectResult>(result);
 		var response = Assert.IsAssignableFrom<IEnumerable<ProductResponse>>(okResult.Value);
 		Assert.Empty(response);
+	}
+
+	[Fact]
+	public async Task PatchStock_ValidRequest_EnqueuesMessage_ReturnsAccepted()
+	{
+		var productId = Guid.NewGuid();
+		var controller = new ProductsControllerV2(_mockProductService.Object, _mockQueue.Object);
+		var request = MockProductData.GetPatchProductStockRequest();
+
+		var result = await controller.PatchStock(productId, request, _token);
+
+		_mockQueue.Verify(q => q.Enqueue(It.Is<StockUpdateMessage>(
+			m => m.ProductId == productId && m.NewQuantity == 15)), Times.Once);
+
+		Assert.IsType<AcceptedResult>(result);
+	}
+
+	[Fact]
+	public async Task PatchStock_NullQuantity_ReturnsBadRequest()
+	{
+		var controller = new ProductsControllerV2(_mockProductService.Object, _mockQueue.Object);
+		var request = new PatchProductStockRequest { QuantityInStock = null };
+		
+		var result = await controller.PatchStock(Guid.NewGuid(), request, _token);
+
+		Assert.IsType<BadRequestObjectResult>(result);
 	}
 }

@@ -12,23 +12,23 @@ public class ProductService : IProductService
 		_productRepository = productRepository;
 	}
 
-	public async Task<IEnumerable<Product>> GetAllAsync()
+	public async Task<IEnumerable<Product>> GetAllAsync(CancellationToken token = default)
 	{
-		return await _productRepository.GetAllAsync();
+		return await _productRepository.GetAllAsync(token);
 	}
 
-	public async Task<Product?> GetByIdAsync(Guid id)
+	public async Task<Product?> GetByIdAsync(Guid id, CancellationToken token = default)
 	{
-		return await _productRepository.GetByIdAsync(id);
+		return await _productRepository.GetByIdAsync(id, token);
 	}
 
-	public async Task<Product> CreateAsync(Product product)
+	public async Task<Product> CreateAsync(Product product, CancellationToken token = default)
 	{
-		return await _productRepository.CreateAsync(product);
+		return await _productRepository.CreateAsync(product, token);
 	}
 
-	public async Task<Product?> UpdateAsync(Product product)
+	public async Task<Product?> UpdateAsync(Product product, CancellationToken token = default)
 	{
-		return await _productRepository.PatchAsync(product);
+		return await _productRepository.PatchAsync(product, token);
 	}
 }

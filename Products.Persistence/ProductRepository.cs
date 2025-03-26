@@ -14,33 +14,33 @@ public class ProductRepository : IProductRepository
 		_context = context;
 	}
 
-	public async Task<Product?> GetByIdAsync(Guid id)
+	public async Task<Product?> GetByIdAsync(Guid id, CancellationToken token = default)
 	{
-		return await _context.Products.FindAsync(id);
+		return await _context.Products.FindAsync([id], token);
 	}
 
-	public async Task<IEnumerable<Product>> GetAllAsync()
+	public async Task<IEnumerable<Product>> GetAllAsync(CancellationToken token = default)
 	{
-		return await _context.Products.ToListAsync();
+		return await _context.Products.ToListAsync(token);
 	}
 
-	public async Task<Product> CreateAsync(Product product)
+	public async Task<Product> CreateAsync(Product product, CancellationToken token = default)
 	{
 		_context.Products.Add(product);
-		await _context.SaveChangesAsync();
+		await _context.SaveChangesAsync(token);
 		return product;
 	}
 
-	public async Task<Product?> PatchAsync(Product product)
+	public async Task<Product?> PatchAsync(Product product, CancellationToken token = default)
 	{
-		Product? existingProduct = await _context.Products.FindAsync(product.Id);
+		Product? existingProduct = await _context.Products.FindAsync([product.Id], token);
 		if (existingProduct == null)
 			return null;
 
 		if (product.QuantityInStock >= 0) 
 			existingProduct.UpdateStock(product.QuantityInStock);
 
-		await _context.SaveChangesAsync();
+		await _context.SaveChangesAsync(token);
 		return existingProduct;
 	}
 }

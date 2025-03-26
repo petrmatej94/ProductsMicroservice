@@ -4,8 +4,8 @@ namespace Products.Infrastructure.Repositories;
 
 public interface IProductRepository
 {
-	Task<IEnumerable<Product>> GetAllAsync();
-	Task<Product?> GetByIdAsync(Guid id);
-	Task<Product> CreateAsync(Product product);
-	Task<Product?> PatchAsync(Product product);
+	Task<IEnumerable<Product>> GetAllAsync(CancellationToken token = default);
+	Task<Product?> GetByIdAsync(Guid id, CancellationToken token = default);
+	Task<Product> CreateAsync(Product product, CancellationToken token = default);
+	Task<Product?> PatchAsync(Product product, CancellationToken token = default);
 }

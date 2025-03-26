@@ -80,7 +80,7 @@ public class ProductsController : ControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> PatchStock([FromRoute] Guid id, [FromBody] PatchProductStockRequest request)
 	{
-		if (request is null)
+		if (request == null || request.QuantityInStock == null)
 		{
 			return BadRequest("Nothing to update.");
 		}

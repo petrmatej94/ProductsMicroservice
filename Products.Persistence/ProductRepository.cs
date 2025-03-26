@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Products.Application.Interfaces;
 using Products.Domain.Entities;
-using Products.Infrastructure.Repositories;
 using Products.Persistence.Database;
 
 namespace Products.Persistence;

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Products.Application.Services;
 using Products.Application.Validators;
-using Products.Infrastructure.Repositories;
 using Products.Persistence;
 using Products.Persistence.Database;
 using System.Reflection;
@@ -13,6 +12,7 @@ using Serilog;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
+using Products.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

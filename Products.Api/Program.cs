@@ -8,8 +8,13 @@ using Products.Infrastructure.Repositories;
 using Products.Persistence;
 using Products.Persistence.Database;
 using System.Reflection;
+using Products.Api.Middlewares;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, loggerConfig) =>
+	loggerConfig.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -38,7 +43,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
+
 var app = builder.Build();
+
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
@@ -56,4 +65,16 @@ using (IServiceScope scope = app.Services.CreateScope())
     ApplicationDbContext.Seed(dbContext);
 }
 
-app.Run();
+try
+{
+	Log.Information("Starting Products REST API in Environment: {Environment}", app.Environment.EnvironmentName);
+	app.Run();
+}
+catch (Exception ex)
+{
+	Log.Fatal(ex, "App failed during startup.");
+}
+finally
+{
+	Log.CloseAndFlush();
+}

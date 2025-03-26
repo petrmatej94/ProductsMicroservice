@@ -58,4 +58,12 @@ public static class MockProductData
 			QuantityInStock = stock
 		};
 	}
+
+	public static PatchProductStockRequest GetPatchProductStockRequest()
+	{
+		return new PatchProductStockRequest
+		{
+			QuantityInStock = 15
+		};
+	}
 }

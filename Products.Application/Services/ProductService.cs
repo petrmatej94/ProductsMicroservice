@@ -1,5 +1,5 @@
 ﻿using Products.Domain.Entities;
-using Products.Infrastructure.Repositories;
+using Products.Application.Interfaces;
 
 namespace Products.Application.Services;
 

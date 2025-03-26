@@ -43,4 +43,15 @@ public class ProductRepository : IProductRepository
 		await _context.SaveChangesAsync(token);
 		return existingProduct;
 	}
+
+	public async Task<IEnumerable<Product>> GetAllPagedAsync(GetAllProductsOptions options, CancellationToken token = default)
+	{
+		IQueryable<Product> query = _context.Products.AsQueryable();
+
+		return await query
+			.OrderBy(p => p.Name)
+			.Skip((options.Page - 1) * options.PageSize)
+			.Take(options.PageSize)
+			.ToListAsync(token);
+	}
 }

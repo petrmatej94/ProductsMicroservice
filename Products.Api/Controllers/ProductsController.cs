@@ -9,6 +9,7 @@ namespace Products.Api.Controllers;
 
 [ApiController]
 [ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/products")]
 public class ProductsController : ControllerBase
 {
 	private readonly IProductService _productService;
@@ -24,7 +25,7 @@ public class ProductsController : ControllerBase
 	/// <param name="id">Product ID</param>
 	/// <param name="token">Cancellation token.</param>
 	/// <returns>Product if found, 404 otherwise</returns>
-	[HttpGet(ApiEndpoints.Products.Get)]
+	[HttpGet("{id:guid}")]
 	[ProducesResponseType(typeof(ProductResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<IActionResult> Get([FromRoute] Guid id, CancellationToken token)
@@ -44,7 +45,7 @@ public class ProductsController : ControllerBase
 	/// </summary>
 	/// <param name="token">Cancellation token.</param>
 	/// <returns>List of products (can be empty)</returns>
-	[HttpGet(ApiEndpoints.Products.GetAll)]
+	[HttpGet]
 	[ProducesResponseType(typeof(IEnumerable<ProductResponse>), StatusCodes.Status200OK)]
 	public async Task<IActionResult> GetAll(CancellationToken token)
 	{
@@ -59,7 +60,7 @@ public class ProductsController : ControllerBase
 	/// <param name="request">Product creation data</param>
 	/// <param name="token">Cancellation token.</param>
 	/// <returns>The newly created product.</returns>
-	[HttpPost(ApiEndpoints.Products.Create)]
+	[HttpPost]
 	[ProducesResponseType(typeof(ProductResponse), StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<IActionResult> Create([FromBody] CreateProductRequest request, CancellationToken token)
@@ -78,7 +79,7 @@ public class ProductsController : ControllerBase
 	/// <param name="request">Stock update payload</param>
 	/// <param name="token">Cancellation token.</param>
 	/// <returns>The updated product or appropriate error</returns>
-	[HttpPatch(ApiEndpoints.Products.Patch)]
+	[HttpPatch("{id:guid}")]
 	[ProducesResponseType(typeof(ProductResponse), StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]

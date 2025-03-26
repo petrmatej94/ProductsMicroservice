@@ -30,6 +30,15 @@ public static class MockProductData
 		};
 	}
 
+	public static GetAllProductsRequest GetAllProductsRequest()
+	{
+		return new GetAllProductsRequest
+		{ 
+			Page = 1, 
+			PageSize = 10 
+		};
+	}
+
 	public static CreateProductRequest GetCreateProductRequest()
 	{
 		return new CreateProductRequest

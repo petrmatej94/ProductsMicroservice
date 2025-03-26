@@ -8,4 +8,5 @@ public interface IProductRepository
 	Task<Product?> GetByIdAsync(Guid id, CancellationToken token = default);
 	Task<Product> CreateAsync(Product product, CancellationToken token = default);
 	Task<Product?> PatchAsync(Product product, CancellationToken token = default);
+	Task<IEnumerable<Product>> GetAllPagedAsync(GetAllProductsOptions options, CancellationToken token = default);
 }

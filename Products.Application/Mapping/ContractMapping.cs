@@ -40,4 +40,13 @@ public static class ContractMapping
 		if (request.QuantityInStock.HasValue)
 			product.UpdateStock(request.QuantityInStock.Value);
 	}
+
+	public static GetAllProductsOptions MapToOptions(this GetAllProductsRequest request)
+	{
+		return new GetAllProductsOptions
+		{
+			Page = request.Page,
+			PageSize = request.PageSize
+		};
+	}
 }

@@ -10,6 +10,9 @@ using Products.Persistence.Database;
 using System.Reflection;
 using Products.Api.Middlewares;
 using Serilog;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,11 +20,22 @@ builder.Host.UseSerilog((context, loggerConfig) =>
 	loggerConfig.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(options =>
 {
 	var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 	var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-	c.IncludeXmlComments(xmlPath);
+	options.IncludeXmlComments(xmlPath);
+
+	var provider = builder.Services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
+
+	foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
+	{
+		options.SwaggerDoc(description.GroupName, new OpenApiInfo
+		{
+			Title = $"Products API {description.ApiVersion}",
+			Version = description.ApiVersion.ToString()
+		});
+	}
 });
 
 builder.Services.AddControllers();
@@ -35,6 +49,13 @@ builder.Services.AddApiVersioning(options =>
 	options.AssumeDefaultVersionWhenUnspecified = true;
 	options.DefaultApiVersion = new ApiVersion(1, 0);
 	options.ReportApiVersions = true;
+	options.ApiVersionReader = new UrlSegmentApiVersionReader();
+});
+
+builder.Services.AddVersionedApiExplorer(options =>
+{
+	options.GroupNameFormat = "'v'VVV";
+	options.SubstituteApiVersionInUrl = true;
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -46,14 +67,23 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 
-app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
 
 var swaggerEnabled = builder.Configuration.GetValue<bool>("Swagger:Enabled");
 if (swaggerEnabled)
 {
 	app.UseSwagger();
-	app.UseSwaggerUI();
+	app.UseSwaggerUI(options =>
+	{
+		var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+		foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
+		{
+			options.SwaggerEndpoint(
+				$"/swagger/{description.GroupName}/swagger.json",
+				description.GroupName.ToUpperInvariant());
+		}
+	});
 }
 
 app.UseHttpsRedirection();

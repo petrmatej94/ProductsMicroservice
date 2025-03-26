@@ -31,4 +31,9 @@ public class ProductService : IProductService
 	{
 		return await _productRepository.PatchAsync(product, token);
 	}
+
+	public async Task<IEnumerable<Product>> GetAllPagedAsync(GetAllProductsOptions options, CancellationToken token = default)
+	{
+		return await _productRepository.GetAllPagedAsync(options, token);
+	}
 }

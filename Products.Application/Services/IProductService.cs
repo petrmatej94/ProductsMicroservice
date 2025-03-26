@@ -4,8 +4,8 @@ namespace Products.Application.Services;
 
 public interface IProductService
 {
-	Task<Product?> GetByIdAsync(Guid id);
-	Task<IEnumerable<Product>> GetAllAsync();
-	Task<Product> CreateAsync(Product product);
-	Task<Product?> UpdateAsync(Product product);
+	Task<Product?> GetByIdAsync(Guid id, CancellationToken token = default);
+	Task<IEnumerable<Product>> GetAllAsync(CancellationToken token = default);
+	Task<Product> CreateAsync(Product product, CancellationToken token = default);
+	Task<Product?> UpdateAsync(Product product, CancellationToken token = default);
 }

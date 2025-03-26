@@ -12,6 +12,7 @@ public class ProductsControllerTests
 {
 	private readonly Mock<IProductService> _mockProductService;
 	private readonly ProductsController _controller;
+	private readonly CancellationToken _token = CancellationToken.None;
 
 	public ProductsControllerTests()
 	{
@@ -24,9 +25,9 @@ public class ProductsControllerTests
 	{
 		var productId = Guid.NewGuid();
 		var product = MockProductData.GetLaptopProduct();
-		_mockProductService.Setup(service => service.GetByIdAsync(productId)).ReturnsAsync(product);
+		_mockProductService.Setup(service => service.GetByIdAsync(productId, It.IsAny<CancellationToken>())).ReturnsAsync(product);
 
-		var result = await _controller.Get(productId);
+		var result = await _controller.Get(productId, _token);
 
 		var actionResult = Assert.IsType<OkObjectResult>(result);
 		var response = Assert.IsType<ProductResponse>(actionResult.Value);
@@ -37,9 +38,9 @@ public class ProductsControllerTests
 	public async Task Get_ReturnsNotFound_WhenProductDoesNotExist()
 	{
 		var productId = Guid.NewGuid();
-		_mockProductService.Setup(service => service.GetByIdAsync(productId)).ReturnsAsync((Product)null!);
+		_mockProductService.Setup(service => service.GetByIdAsync(productId, It.IsAny<CancellationToken>())).ReturnsAsync((Product)null!);
 
-		var result = await _controller.Get(productId);
+		var result = await _controller.Get(productId, _token);
 
 		Assert.IsType<NotFoundResult>(result);
 	}
@@ -48,9 +49,9 @@ public class ProductsControllerTests
 	public async Task GetAll_ReturnsOk_WhenProductsExist()
 	{
 		var products = MockProductData.GetAllProducts();
-		_mockProductService.Setup(service => service.GetAllAsync()).ReturnsAsync(products);
+		_mockProductService.Setup(service => service.GetAllAsync(It.IsAny<CancellationToken>())).ReturnsAsync(products);
 
-		var result = await _controller.GetAll();
+		var result = await _controller.GetAll(_token);
 
 		var actionResult = Assert.IsType<OkObjectResult>(result);
 		var response = Assert.IsAssignableFrom<IEnumerable<ProductResponse>>(actionResult.Value);
@@ -60,9 +61,9 @@ public class ProductsControllerTests
 	[Fact]
 	public async Task GetAll_ReturnsEmptyList_WhenNoProductsExist()
 	{
-		_mockProductService.Setup(service => service.GetAllAsync()).ReturnsAsync(new List<Product>());
+		_mockProductService.Setup(service => service.GetAllAsync(It.IsAny<CancellationToken>())).ReturnsAsync(new List<Product>());
 
-		var result = await _controller.GetAll();
+		var result = await _controller.GetAll(_token);
 
 		var actionResult = Assert.IsType<OkObjectResult>(result);
 		var response = Assert.IsAssignableFrom<IEnumerable<ProductResponse>>(actionResult.Value);
@@ -74,9 +75,9 @@ public class ProductsControllerTests
 	{
 		var request = MockProductData.GetCreateProductRequest();
 		var product = MockProductData.GetLaptopProduct();
-		_mockProductService.Setup(service => service.CreateAsync(It.IsAny<Product>())).ReturnsAsync(product);
+		_mockProductService.Setup(service => service.CreateAsync(It.IsAny<Product>(), It.IsAny<CancellationToken>())).ReturnsAsync(product);
 
-		var result = await _controller.Create(request);
+		var result = await _controller.Create(request, _token);
 
 		var actionResult = Assert.IsType<CreatedAtActionResult>(result);
 		Assert.Equal("Get", actionResult.ActionName);
@@ -95,10 +96,10 @@ public class ProductsControllerTests
 		var productId = Guid.NewGuid();
 		var request = MockProductData.GetPatchProductStockRequest(15);
 		var product = MockProductData.GetLaptopProduct();
-		_mockProductService.Setup(service => service.GetByIdAsync(productId)).ReturnsAsync(product);
-		_mockProductService.Setup(service => service.UpdateAsync(It.IsAny<Product>())).ReturnsAsync(product);
+		_mockProductService.Setup(service => service.GetByIdAsync(productId, It.IsAny<CancellationToken>())).ReturnsAsync(product);
+		_mockProductService.Setup(service => service.UpdateAsync(It.IsAny<Product>(), It.IsAny<CancellationToken>())).ReturnsAsync(product);
 
-		var result = await _controller.PatchStock(productId, request);
+		var result = await _controller.PatchStock(productId, request, _token);
 
 		var actionResult = Assert.IsType<OkObjectResult>(result);
 		var response = Assert.IsType<ProductResponse>(actionResult.Value);
@@ -110,9 +111,9 @@ public class ProductsControllerTests
 	{
 		var productId = Guid.NewGuid();
 		var request = MockProductData.GetPatchProductStockRequest(15);
-		_mockProductService.Setup(service => service.GetByIdAsync(productId)).ReturnsAsync((Product)null!);
+		_mockProductService.Setup(service => service.GetByIdAsync(productId, It.IsAny<CancellationToken>())).ReturnsAsync((Product)null!);
 
-		var result = await _controller.PatchStock(productId, request);
+		var result = await _controller.PatchStock(productId, request, _token);
 
 		Assert.IsType<NotFoundResult>(result);
 	}
@@ -122,7 +123,7 @@ public class ProductsControllerTests
 	{
 		var productId = Guid.NewGuid();
 
-		var result = await _controller.PatchStock(productId, null!);
+		var result = await _controller.PatchStock(productId, null!, _token);
 
 		var badRequest = Assert.IsType<BadRequestObjectResult>(result);
 		Assert.Equal("Nothing to update.", badRequest.Value);
@@ -134,7 +135,7 @@ public class ProductsControllerTests
 		var productId = Guid.NewGuid();
 
 		var request = MockProductData.GetPatchProductStockRequest(null);
-		var result = await _controller.PatchStock(productId, request);
+		var result = await _controller.PatchStock(productId, request, _token);
 
 		var badRequest = Assert.IsType<BadRequestObjectResult>(result);
 		Assert.Equal("Nothing to update.", badRequest.Value);
@@ -147,10 +148,10 @@ public class ProductsControllerTests
 		var request = MockProductData.GetPatchProductStockRequest(10);
 		var existingProduct = MockProductData.GetLaptopProduct();
 
-		_mockProductService.Setup(s => s.GetByIdAsync(productId)).ReturnsAsync(existingProduct);
-		_mockProductService.Setup(s => s.UpdateAsync(It.IsAny<Product>())).ReturnsAsync((Product)null!);
+		_mockProductService.Setup(s => s.GetByIdAsync(productId, It.IsAny<CancellationToken>())).ReturnsAsync(existingProduct);
+		_mockProductService.Setup(s => s.UpdateAsync(It.IsAny<Product>(), It.IsAny<CancellationToken>())).ReturnsAsync((Product)null!);
 
-		var result = await _controller.PatchStock(productId, request);
+		var result = await _controller.PatchStock(productId, request, _token);
 
 		Assert.IsType<NotFoundResult>(result);
 	}

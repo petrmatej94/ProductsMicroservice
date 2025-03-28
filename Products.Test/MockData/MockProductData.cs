@@ -44,10 +44,7 @@ public static class MockProductData
 		return new CreateProductRequest
 		{
 			Name = "Laptop",
-			ImageUrl = "https://image.jpg",
-			Price = 25000,
-			Description = "Lenovo laptop",
-			QuantityInStock = 10
+			ImageUrl = "https://image.jpg"
 		};
 	}
 

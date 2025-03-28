@@ -17,8 +17,8 @@ public class Product
 		if (!Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
 			throw new ArgumentException("Invalid image URL", nameof(imageUrl));
 
-		if (price <= 0)
-			throw new ArgumentOutOfRangeException(nameof(price), "Price must be greater than 0");
+		if (price < 0)
+			throw new ArgumentOutOfRangeException(nameof(price), "Price must be greater or equal to 0");
 
 		if (quantityInStock < 0)
 			throw new ArgumentOutOfRangeException(nameof(quantityInStock), "Quantity cannot be negative");
@@ -30,6 +30,10 @@ public class Product
 		Description = description;
 		QuantityInStock = quantityInStock;
 	}
+
+	public Product(string name, string imageUrl) 
+		: this(name, imageUrl, 0m, null, 0)
+	{ }
 
 	public void UpdateStock(int quantity)
 	{

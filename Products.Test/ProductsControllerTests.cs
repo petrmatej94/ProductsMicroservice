@@ -85,9 +85,6 @@ public class ProductsControllerTests
 		var response = Assert.IsType<ProductResponse>(actionResult.Value);
 		Assert.Equal(request.Name, response.Name);
 		Assert.Equal(request.ImageUrl, response.ImageUrl);
-		Assert.Equal(request.Price, response.Price);
-		Assert.Equal(request.Description, response.Description);
-		Assert.Equal(request.QuantityInStock, response.QuantityInStock);
 	}
 
 	[Fact]

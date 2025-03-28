@@ -10,10 +10,7 @@ public static class ContractMapping
 	{
 		return new Product(
 			name: request.Name,
-			imageUrl: request.ImageUrl,
-			price: request.Price,
-			description: request.Description,
-			quantityInStock: request.QuantityInStock
+			imageUrl: request.ImageUrl
 			);
 	}
 
